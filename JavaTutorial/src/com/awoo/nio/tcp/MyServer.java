@@ -24,6 +24,7 @@ public class MyServer implements Runnable
 
 	// 要监听的端口号
 	private int port;
+	// TODO Add other selectors for workers in order to increase throughput
 	// 生成一个信号监视器
 	private Selector selector;
 	// 读缓冲区
