@@ -1,74 +1,55 @@
 package com.awoo.nio.tcp;
 
 import java.io.IOException;
+import java.nio.channels.SelectionKey;
 import java.util.Date;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Worker implements Runnable
 {
-	private Queue<Task> tasks = new ConcurrentLinkedQueue<Task>();
+	private Task task;
 
-	public void addTasks(Task task)
+	public Worker(Task task)
 	{
-		synchronized (tasks)
-		{
-			tasks.add(task);
-			tasks.notify();
-		}
+		this.task = task;
 	}
 
-	// TODO put the workers into a threadpool
 	@Override
 	public void run()
 	{
-		while (true)
+		String msg = task.getMessage();
+		SelectionKey key = task.getKey();
+		String result = null;
+
+		if (msg.equalsIgnoreCase("time"))
 		{
-			synchronized (tasks)
-			{
-				while (tasks.peek() == null)
-				{
-					try
-					{
-						tasks.wait();
-					}
-					catch (InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-				}
-			}
-			Task task = tasks.poll();
-
-			String msg = task.getMessage();
-			String result = null;
-
-			if (msg.equalsIgnoreCase("time"))
-			{
-				result = new Date().toString();
-			}
-			else if (msg.equalsIgnoreCase("bye"))
-			{
-				try
-				{
-					task.getKey().channel().close();
-					task.getKey().cancel();
-					System.out.println("客户端请求断开链接");
-					continue;
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			}
-
-			if (result == null)
-			{
-				result = msg;
-			}
-			task.getServer().prepareResponse(task.getKey(), result);
-			System.out.println(msg);
-			System.out.println("处理完毕...");
+			result = new Date().toString();
 		}
+		else if (msg.equalsIgnoreCase("bye"))
+		{
+			try
+			{
+				key.channel().close();
+				key.cancel();
+				System.out.println("客户端请求断开链接");
+				// 断开连接以后要返回
+				return;
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		if (result == null)
+		{
+			result = msg;
+		}
+
+		key.attach(result);
+		key.interestOps(SelectionKey.OP_WRITE);
+		task.getServer().wakeupSelector();
+
+		System.out.println(msg);
+		System.out.println("处理完毕...");
 	}
 }

@@ -10,17 +10,12 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class MyServer implements Runnable
 {
-	// TODO put the workers into a threadpool
-	private Executor executor = Executors.newFixedThreadPool(20);
-
-	private Worker worker;
+	private Executor executor = Executors.newFixedThreadPool(5);
 
 	// 要监听的端口号
 	private int port;
@@ -30,17 +25,13 @@ public class MyServer implements Runnable
 	// 读缓冲区
 	private ByteBuffer r_buffer = ByteBuffer.allocate(1024);
 
-	private Map<SelectionKey, String> responses = new ConcurrentHashMap<SelectionKey, String>();
-
-	public MyServer(int port, Worker worker)
+	public MyServer(int port)
 	{
 		this.port = port;
-		this.worker = worker;
 		try
 		{
 			selector = Selector.open();
 			initServer();
-			new Thread(worker).start();
 		}
 		catch (IOException e)
 		{
@@ -69,7 +60,10 @@ public class MyServer implements Runnable
 			while (true)
 			{
 				// 将会阻塞执行，直到有事件发生
-				selector.select();
+				int events = selector.select();
+
+				if (events == 0) continue;
+
 				Iterator<SelectionKey> it = selector.selectedKeys().iterator();
 				while (it.hasNext())
 				{
@@ -127,21 +121,21 @@ public class MyServer implements Runnable
 			SocketChannel sc = (SocketChannel) key.channel();
 			System.out.println("读入数据");
 			r_buffer.clear();
-			// 将字节序列从此通道中读入给定的缓冲区r_bBuf
+
 			int bytes = sc.read(r_buffer);
 			if (bytes == -1)
 			{
 				sc.close();
 				key.cancel();
-				System.out.println("链接被终端");
+				System.out.println("连接被中断");
 				return;
 			}
 
 			r_buffer.flip();
 			String msg = Charset.forName("UTF-8").decode(r_buffer).toString();
 
-			System.out.println("加入处理队列中");
-			worker.addTasks(new Task(msg, key, this));
+			System.out.println("加入处理线程池中");
+			executor.execute(new Worker(new Task(msg, key, this)));
 		}
 		catch (IOException e)
 		{
@@ -153,7 +147,7 @@ public class MyServer implements Runnable
 	{
 		SocketChannel sc = (SocketChannel) key.channel();
 		System.out.println("写入数据");
-		String result = responses.remove(key);
+		String result = (String) key.attachment();
 
 		if (result != null)
 		{
@@ -173,10 +167,8 @@ public class MyServer implements Runnable
 		}
 	}
 
-	public void prepareResponse(SelectionKey key, String result)
+	public void wakeupSelector()
 	{
-		responses.put(key, result);
-		key.interestOps(SelectionKey.OP_WRITE);
 		// 由于注册了新的感兴趣事件，需要唤醒已经在阻塞监听的selector
 		selector.wakeup();
 	}
@@ -184,6 +176,6 @@ public class MyServer implements Runnable
 	public static void main(String[] args)
 	{
 		Executor executor = Executors.newSingleThreadExecutor();
-		executor.execute(new MyServer(1988, new Worker()));
+		executor.execute(new MyServer(1988));
 	}
 }
