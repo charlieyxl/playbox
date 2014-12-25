@@ -60,7 +60,7 @@ public class MyServer implements Runnable
 			while (true)
 			{
 				// 将会阻塞执行，直到有事件发生
-				int events = selector.select();
+				int events = selector.select(2000);
 
 				if (events == 0) continue;
 
@@ -133,6 +133,12 @@ public class MyServer implements Runnable
 
 			r_buffer.flip();
 			String msg = Charset.forName("UTF-8").decode(r_buffer).toString();
+
+			// read object, or we can use Gson to read object from json String
+			// ByteArrayInputStream input = new
+			// ByteArrayInputStream(buffer.array());
+			// ObjectInputStream objInput = new ObjectInputStream(input);
+			// DataBucket databucket = (DataBucket) objInput.readObject();
 
 			System.out.println("加入处理线程池中");
 			executor.execute(new Worker(new Task(msg, key, this)));
