@@ -4,18 +4,18 @@ import java.nio.channels.SelectionKey;
 
 public class Task
 {
-	private String message;
+	private Object message;
 	private SelectionKey key;
 	private MyServer server;
 
-	public Task(String message, SelectionKey key, MyServer server)
+	public Task(Object message, SelectionKey key, MyServer server)
 	{
 		this.message = message;
 		this.key = key;
 		this.server = server;
 	}
 
-	public String getMessage()
+	public Object getMessage()
 	{
 		return message;
 	}

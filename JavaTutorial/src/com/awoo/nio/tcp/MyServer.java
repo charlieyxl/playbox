@@ -8,13 +8,14 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class MyServer implements Runnable
 {
+	public static final int K = 1024;
+
 	private Executor executor = Executors.newFixedThreadPool(5);
 
 	// 要监听的端口号
@@ -23,7 +24,7 @@ public class MyServer implements Runnable
 	// 生成一个信号监视器
 	private Selector selector;
 	// 读缓冲区
-	private ByteBuffer r_buffer = ByteBuffer.allocate(1024);
+	private ByteBuffer r_buffer = ByteBuffer.allocate(1 * K);
 
 	public MyServer(int port)
 	{
@@ -52,14 +53,13 @@ public class MyServer implements Runnable
 		System.out.println("The server has been launched...");
 	}
 
-	@Override
 	public void run()
 	{
 		try
 		{
 			while (true)
 			{
-				// 将会阻塞执行，直到有事件发生
+				// 将会阻塞执行，直到有事件发生或超时
 				int events = selector.select(2000);
 
 				if (events == 0) continue;
@@ -122,8 +122,8 @@ public class MyServer implements Runnable
 			System.out.println("读入数据");
 			r_buffer.clear();
 
-			int bytes = sc.read(r_buffer);
-			if (bytes == -1)
+			int bytesRead = sc.read(r_buffer);
+			if (bytesRead == -1)
 			{
 				sc.close();
 				key.cancel();
@@ -132,16 +132,16 @@ public class MyServer implements Runnable
 			}
 
 			r_buffer.flip();
-			String msg = Charset.forName("UTF-8").decode(r_buffer).toString();
+			// Read String from input
+			Object input = TranslationUtil.bytesToString.apply(r_buffer);
+			executor.execute(new EchoWorker(new Task(input, key, this)));
 
-			// read object, or we can use Gson to read object from json String
-			// ByteArrayInputStream input = new
-			// ByteArrayInputStream(buffer.array());
-			// ObjectInputStream objInput = new ObjectInputStream(input);
-			// DataBucket databucket = (DataBucket) objInput.readObject();
+			// Read Object from input
+			// Object input = TranslationUtil.bytesToObject.apply(r_buffer);
+			// executor.execute(new DataBucketWorker(new Task(input, key,
+			// this)));
 
 			System.out.println("加入处理线程池中");
-			executor.execute(new Worker(new Task(msg, key, this)));
 		}
 		catch (IOException e)
 		{

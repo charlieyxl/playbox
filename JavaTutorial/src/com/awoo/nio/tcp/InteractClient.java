@@ -30,7 +30,6 @@ public class InteractClient implements Runnable
 		new Thread(new InteractClient("localhost", 1988)).start();
 	}
 
-	@Override
 	public void run()
 	{
 		try

@@ -33,7 +33,6 @@ public class StressTest implements Runnable
 		}
 	}
 
-	@Override
 	public void run()
 	{
 		try

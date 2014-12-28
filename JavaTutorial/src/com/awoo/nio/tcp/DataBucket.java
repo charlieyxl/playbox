@@ -27,4 +27,10 @@ public class DataBucket implements Serializable
 	{
 		this.id = id;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "name: " + name + ", id: " + id;
+	}
 }

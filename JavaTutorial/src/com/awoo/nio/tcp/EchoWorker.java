@@ -4,19 +4,18 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.util.Date;
 
-public class Worker implements Runnable
+public class EchoWorker implements Runnable
 {
 	private Task task;
 
-	public Worker(Task task)
+	public EchoWorker(Task task)
 	{
 		this.task = task;
 	}
 
-	@Override
 	public void run()
 	{
-		String msg = task.getMessage();
+		String msg = (String) task.getMessage();
 		SelectionKey key = task.getKey();
 		String result = null;
 
