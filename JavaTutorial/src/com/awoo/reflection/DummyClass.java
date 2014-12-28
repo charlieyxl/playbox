@@ -104,7 +104,6 @@ public class DummyClass<T> extends ParentDummyClass implements Dummy
 		this.id = id;
 	}
 
-	@Override
 	public String hello()
 	{
 		return "Hello DummyClass";

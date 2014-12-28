@@ -12,7 +12,6 @@ public class MyInvocationHandler implements InvocationHandler
 		this.obj = obj;
 	}
 
-	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable
 	{
