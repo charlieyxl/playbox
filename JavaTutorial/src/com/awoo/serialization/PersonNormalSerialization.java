@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public class Person implements Serializable
+public class PersonNormalSerialization implements Serializable
 {
 	private static final long serialVersionUID = -3667261580007474801L;
 
@@ -21,8 +21,16 @@ public class Person implements Serializable
 	private Gender gender;
 	private Job job;
 
-	public Person(String name, int age, Gender gender, Job job)
+	public PersonNormalSerialization()
 	{
+		System.out
+				.println("PersonNormalSerialization Constructor without args");
+	}
+
+	public PersonNormalSerialization(String name, int age, Gender gender,
+			Job job)
+	{
+		System.out.println("PersonNormalSerialization Constructor with args");
 		this.name = name;
 		this.age = age;
 		this.gender = gender;
@@ -77,6 +85,8 @@ public class Person implements Serializable
 
 	private void writeObject(ObjectOutputStream out) throws IOException
 	{
+		System.out
+				.println("Executing writeObject in PersonNormalSerialization");
 		// execute default serialization
 		out.defaultWriteObject();
 		// Write age into the object OutputStream explicitly, if multiple fields
@@ -87,6 +97,7 @@ public class Person implements Serializable
 	private void readObject(ObjectInputStream in) throws IOException,
 			ClassNotFoundException
 	{
+		System.out.println("Executing readObject in PersonNormalSerialization");
 		// execute default de-serialization
 		in.defaultReadObject();
 		// Read age from the object OutputStream explicitly
