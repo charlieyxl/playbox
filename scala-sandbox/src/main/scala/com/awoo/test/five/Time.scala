@@ -1,14 +1,12 @@
 package com.awoo.test.five
 
-class Time {
-  private var minutes: Int = 0
-  
-  def this(hours: Int, minutes: Int) {
-    this()
-    this.minutes = hours*60 + minutes
-  }
-  
+class Time (val hours: Int, val minutes: Int) {
   def before(other: Time):Boolean = {
-    minutes < other.minutes
+    if (hours < other.hours)
+      true
+    else if (hours == other.hours)
+      minutes < other.minutes
+    else
+      false
   }
 }
