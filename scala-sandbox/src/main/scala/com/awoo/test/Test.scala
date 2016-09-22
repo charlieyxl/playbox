@@ -1,7 +1,5 @@
 package com.awoo.test
 
-import com.awoo.test.five.Person
-
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable.{ArrayBuffer, Buffer, HashMap}
