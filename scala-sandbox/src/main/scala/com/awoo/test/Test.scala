@@ -17,7 +17,7 @@ object Test {
     //    println(test2e("Hello"))
     //    println(test2f("Hello"))
     //    println(test2g(2, 5))
-//    println(test3a(10).mkString("<", ", ", ">"))
+    //    println(test3a(10).mkString("<", ", ", ">"))
     //    println(test3b(test3a(11)).mkString("<", ", ", ">"))
     //    println(test3c(test3a(11)).mkString("<", ", ", ">"))
     //    println(test3d(test3a(11)))
@@ -35,6 +35,11 @@ object Test {
     //    println(test4g(test3a(10)))
     //    println(test4h(test3a(10), 5))
     //    test4i()
+
+//    test9a()
+//    test9c()
+//    test9d()
+    test9f()
   }
 
   def test1() {
@@ -190,7 +195,7 @@ object Test {
   }
 
   def test4b() {
-    val input = Source.fromFile("/Users/yuxiaolu/workspace/scala-sandbox/src/main/resource/input.txt", "UTF-8")
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/input.txt", "UTF-8")
     try {
       val countMap = new HashMap[String, Int]
       var count = 0
@@ -207,7 +212,7 @@ object Test {
   }
 
   def test4c() {
-    val input = Source.fromFile("/Users/yuxiaolu/workspace/scala-sandbox/src/main/resource/input.txt", "UTF-8")
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/input.txt", "UTF-8")
     try {
       var countMap = Map[String, Int]()
       var count = 0
@@ -224,7 +229,7 @@ object Test {
   }
 
   def test4d() {
-    val input = Source.fromFile("/Users/yuxiaolu/workspace/scala-sandbox/src/main/resource/input.txt", "UTF-8")
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/input.txt", "UTF-8")
     try {
       var countMap = SortedMap[String, Int]()
       var count = 0
@@ -241,7 +246,7 @@ object Test {
   }
 
   def test4e() {
-    val input = Source.fromFile("/Users/yuxiaolu/workspace/scala-sandbox/src/main/resource/input.txt", "UTF-8")
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/input.txt", "UTF-8")
     try {
       val countMap: scala.collection.mutable.Map[String, Int] = new java.util.TreeMap[String, Int]
       var count = 0
@@ -291,5 +296,29 @@ object Test {
 
   def test4i() {
     println("Hello".zip("World"))
+  }
+
+  def test9a(): Unit = {
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/nine.txt", "UTF-8")
+    println(input.getLines().toArray.reverse.mkString("\n"))
+  }
+
+  def test9c(): Unit = {
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/nine.txt", "UTF-8")
+    for (i <- input.mkString.split("\\s+") if i.length > 5) println(i)
+  }
+
+  def test9d(): Unit = {
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/nine_double.txt", "UTF-8")
+    val doubles = input.mkString.split("\\s+").map(_.toDouble)
+    println(doubles.sum)
+    println(doubles.max)
+    println(doubles.min)
+  }
+
+  def test9f(): Unit ={
+    val input = Source.fromFile("/Users/yuxiaolu/workspace/playbox/scala-sandbox/src/main/resource/nine.txt", "UTF-8")
+    val numPattern = "[0-9]+".r
+    for (i <- numPattern.findAllIn(input.mkString).toArray) println(i)
   }
 }
