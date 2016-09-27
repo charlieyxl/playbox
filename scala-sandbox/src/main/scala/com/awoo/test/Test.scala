@@ -8,7 +8,7 @@ import scala.math._
 
 object Test {
   def main(args: Array[String]): Unit = {
-            test1
+//            test1
     //    println(test2a(-1))
     //    test2b
     //    test2c1()
