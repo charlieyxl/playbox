@@ -1,7 +1,5 @@
 package com.awoo.test.twelve
 
-import sun.awt.motif.X11GB18030_1
-
 /**
   * Created by yuxiaolu on 9/26/16.
   */
