@@ -26,7 +26,7 @@ object TwelveMain {
 
     //12.7
 //    println(adjustToPair(_ * _)((6, 7)))
-//    println(adjustToPairFun(_ * _)((6, 7)))
+//    println(adjustToPairMethod(_ * _)((6, 7)))
 //    println(adjustToPairAns(_ * _)((6, 7)))
 //    println((adjustToPairOri _).curried(_ * _)((6, 7)))
 
@@ -73,7 +73,8 @@ object TwelveMain {
   def adjustToPair(fun: (Int, Int) => Int)(t: (Int, Int)): Int = {
     fun(t._1, t._2)
   }
-  def adjustToPairFun: ((Int, Int) => Int) => ((Int, Int)) => Int = (fun) => (t) => {
+  //it is a method, others are functions
+  def adjustToPairMethod: ((Int, Int) => Int) => ((Int, Int)) => Int = (fun) => (t) => {
     fun(t._1, t._2)
   }
   def adjustToPairAns(fun: (Int, Int) => Int) = (x: (Int, Int)) => fun(x._1, x._2)
