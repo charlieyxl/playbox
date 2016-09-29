@@ -73,7 +73,7 @@ object TwelveMain {
   def adjustToPair(fun: (Int, Int) => Int)(t: (Int, Int)): Int = {
     fun(t._1, t._2)
   }
-  //it is a method, others are functions
+  //it is a function, others are methods
   def adjustToPairMethod: ((Int, Int) => Int) => ((Int, Int)) => Int = (fun) => (t) => {
     fun(t._1, t._2)
   }
