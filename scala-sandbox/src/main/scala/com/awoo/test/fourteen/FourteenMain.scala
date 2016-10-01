@@ -32,11 +32,17 @@ object FourteenMain {
 //    println(leafSumTree(tree))
 
     //14.8
-    val add = (s: Seq[Int]) => s.sum
-    val product = (s: Seq[Int]) => s.product
-    val minus = (s: Seq[Int]) => s.foldLeft(0)(_ - _)
-    val tree = NodeOpT(add, NodeOpT(product, LeafOpT(3), LeafOpT(8)), LeafOpT(2), NodeOpT(minus, LeafOpT(5)))
-    println(leafOpTree(tree))
+//    val add = (s: Seq[Int]) => s.sum
+//    val product = (s: Seq[Int]) => s.product
+//    val minus = (s: Seq[Int]) => s.foldLeft(0)(_ - _)
+//    val tree = NodeOpT(add, NodeOpT(product, LeafOpT(3), LeafOpT(8)), LeafOpT(2), NodeOpT(minus, LeafOpT(5)))
+//    println(leafOpTree(tree))
+
+    //14.9
+//    println(optionListSum(List(Some(1), None, Some(2), None, Some(3))))
+
+    //14.10
+    println(h(2))
   }
 
   //14.2
@@ -66,4 +72,23 @@ object FourteenMain {
     case n: Int => n
     case _ => 0
   }
+
+  //14.9
+  def optionListSum(list: List[Option[Int]]): Int = {
+    //foldLeft would ignore None, sum actually calling foldLeft
+    list.flatMap(x => x).sum
+  }
+
+  //14.10
+  type Foo = Double => Option[Double]
+  def compose(f: Foo, g: Foo): Foo = {
+    x: Double => g(x) match {
+      case None => None
+      case Some(y) => f(y)
+    }
+  }
+
+  def _f(x: Double) = if (x >= 0) Some(math.sqrt(x)) else None
+  def _g(x: Double) = if (x != 1) Some(1 / (x - 1)) else None
+  def h = compose(_f, _g)
 }
